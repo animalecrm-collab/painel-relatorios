@@ -33,7 +33,7 @@ except Exception as e:
 
 if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
-
+if not st.session_state.autenticado:
     st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
