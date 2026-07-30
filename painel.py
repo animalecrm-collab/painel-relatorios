@@ -149,16 +149,20 @@ header[data-testid="stHeader"] {
 
 a[data-testid^="stBaseLinkButton"] {
     min-height: 120px !important;
-    height: 120px !important;
+    height: auto !important;
     width: 100% !important;
     align-items: flex-start !important;
     display: flex !important;
+    flex-direction: column !important;
     justify-content: flex-start !important;
     padding: 20px !important;
     border-radius: 18px !important;
     border: 2px solid #999 !important;
     background-color: #f5f5f5 !important;
     transition: border-color 0.15s !important;
+    box-sizing: border-box !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;    
 }
 
 a[data-testid^="stBaseLinkButton"]:hover {
