@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 st.set_page_config(page_title="Digital Animale", page_icon= "🅰",layout="wide")
-
+em_construcao = r"dashboard-em-construcao.netlify.app"
 
 SENHA = "animale-ecomm-2026"
 
@@ -211,7 +211,7 @@ secoes = [
                 "nome": "🏗️  Visão de Estoque (em construção)",
                 "desc": "Cobertura e ruptura por SKU",
                 "resp": "Responsável: Aline Santos & Maria Gomes",
-                "url": "https://performance-animale.netlify.app/",
+                "url": "https://dashboard-em-construcao.netlify.app/",
                 "badge": None,
             },
         ],
