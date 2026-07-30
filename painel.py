@@ -92,7 +92,7 @@ st.logo(r"LOGO_ANIMALE 1.png")
 
 st.space()
 
-st.write(d["nome"].split("  ")[-1].strip())
+
 
 st.markdown("""
 <style>
@@ -329,3 +329,4 @@ for secao in secoes:
                 )
 
     st.markdown("<br>", unsafe_allow_html=True)
+st.write(d["nome"].split("  ")[-1].strip())
