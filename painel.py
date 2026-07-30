@@ -7,7 +7,7 @@ from google.oauth2.service_account import Credentials
 st.set_page_config(page_title="Digital Animale", page_icon= "🅰",layout="wide")
 
 
-SENHA = "animale-ecomm-2026"
+SENHA = "anml-dgt@l26"
 
 # Carrega datas da planilha
 @st.cache_data(ttl=300)
