@@ -1,11 +1,35 @@
 import streamlit as st
 from pathlib import Path
+import gspread
+from google.oauth2.service_account import Credentials
 
 
 st.set_page_config(page_title="Digital Animale", page_icon= "🅰",layout="wide")
 
 
 SENHA = "animale-ecomm-2026"
+
+# Carrega datas da planilha
+@st.cache_data(ttl=300)
+def carregar_datas():
+    scopes = [
+        "https://www.googleapis.com/auth/spreadsheets.readonly",
+        "https://www.googleapis.com/auth/drive.readonly",
+    ]
+    creds = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes=scopes
+    )
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(st.secrets["SHEET_ID"]).sheet1
+    rows = sheet.get_all_records()
+    return {row["nome"]: row["ultima_atualizacao"] for row in rows}
+
+try:
+    datas = carregar_datas()
+except Exception:
+    datas = {}
+
 
 if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
@@ -23,18 +47,35 @@ if "autenticado" not in st.session_state:
         justify-content: center;
         align-items: center;
         min-height: 80vh;
+        width: 800vh;
+    }
+
+    button[aria-label="visibility"] span,
+    button[aria-label="visibility_off"] span {
+        display: none !important;
+    }
+
+    div[data-testid="stTextInput"] button span {
+        display: none !important;
+        font-size: 0 !important;
+        width: 0 !important;
+        overflow: hidden !important;
+    }
+
+    div[data-testid="stTextInput"] button {
+        overflow: hidden !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-    _, col, _ = st.columns([2, 1, 2])
+    _, col, _ = st.columns([1, 2, 1])
 
     with col:
         st.markdown("<br><br><br>", unsafe_allow_html=True)
-        with st.form("login", width= 600):
+        with st.form("login", width=800):
             st.markdown("#### Painel de Relatórios")
             st.markdown("Digite a senha para acessar.")
-            senha = st.text_input("Senha", type="password")
+            senha = st.text_input("Senha", type="password", width=800)
             entrar = st.form_submit_button("Entrar", use_container_width=True)
 
         if entrar:
@@ -62,17 +103,14 @@ html, body, [class*="css"], [data-testid] {
     font-family: 'Montserrat', sans-serif !important;
 }
 
-/* Esconde o header nativo do Streamlit */
 header[data-testid="stHeader"] {
     display: none !important;
 }
 
-/* Remove espaço que o header deixa */
 .block-container {
     padding-top: 0 !important;
 }
 
-/* Faixa do topo */
 .top-bar {
     background-color: #1a1a1a;
     padding: 18px 40px;
@@ -96,7 +134,6 @@ header[data-testid="stHeader"] {
     letter-spacing: 0.05em;
 }
 
-/* Título da página */
 .top-bar-title {
     font-size: 26px;
     font-weight: 600;
@@ -110,7 +147,6 @@ header[data-testid="stHeader"] {
     margin: 0 0 2rem 0;
 }
 
-/* Card base */
 a[data-testid^="stBaseLinkButton"] {
     min-height: 120px !important;
     height: 120px !important;
@@ -130,7 +166,6 @@ a[data-testid^="stBaseLinkButton"]:hover {
     background-color: #E3E3E3 !important;
 }
 
-/* Título — primeiro parágrafo */
 a[data-testid^="stBaseLinkButton"] p:first-child {
     font-size: 15px !important;
     font-weight: 600 !important;
@@ -140,7 +175,6 @@ a[data-testid^="stBaseLinkButton"] p:first-child {
     text-align: center !important;
 }
 
-/* Descrição — segundo parágrafo */
 a[data-testid^="stBaseLinkButton"] p:nth-child(2) {
     font-size: 15px !important;
     font-weight: 400 !important;
@@ -150,17 +184,25 @@ a[data-testid^="stBaseLinkButton"] p:nth-child(2) {
     text-align: center !important;
 }
 
-/* Responsável */
-a[data-testid^="stBaseLinkButton"] p:last-child {
+a[data-testid^="stBaseLinkButton"] p:nth-child(3) {
     font-size: 13px !important;
     font-weight: 400 !important;
     margin: 0 !important;
     line-height: 1.3 !important;
-    color: #999!important;
+    color: #999 !important;
     text-align: center !important;
 }
 
-/* Linha separadora das seções */
+/* Data de atualização — quarto parágrafo */
+a[data-testid^="stBaseLinkButton"] p:last-child {
+    font-size: 11px !important;
+    font-weight: 400 !important;
+    margin: 0 !important;
+    line-height: 1.3 !important;
+    color: #bbb !important;
+    text-align: center !important;
+}
+
 hr {
     margin: 8px 0 16px 0 !important;
     border: none !important;
@@ -179,7 +221,6 @@ hr {
 """, unsafe_allow_html=True)
 
 
-# Dashboards organizados por seção
 secoes = [
     {
         "titulo": "Geral",
@@ -263,7 +304,6 @@ secoes = [
 
 
 st.space()
-# Renderiza em linhas de 3 colunas
 cols_per_row = 3
 
 for secao in secoes:
@@ -280,8 +320,10 @@ for secao in secoes:
                 break
             d = dashboards[idx]
             with col:
+                chave = d["nome"].split("  ")[-1].strip()
+                data = datas.get(chave, "—")
                 st.link_button(
-                    f"**{d['nome']}**\n\n{d['desc']}\n\n{d['resp']}",
+                    f"**{d['nome']}**\n\n{d['desc']}\n\n{d['resp']}\n\nAtualizado em: {data}",
                     d["url"],
                     use_container_width=True
                 )
