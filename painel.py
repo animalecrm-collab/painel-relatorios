@@ -21,7 +21,7 @@ if "autenticado" not in st.session_state:
     st.stop()
 
 
-st.logo(r"C:\Users\theo.pereira\Documents\projeto-painel\LOGO_ANIMALE 1.png")
+st.logo(r"LOGO_ANIMALE 1.png")
 
 st.title("Painel de Dashboards")
 
