@@ -27,9 +27,9 @@ def carregar_datas():
 
 try:
     datas = carregar_datas()
-except Exception:
+except Exception as e:
+    st.error(f"Erro ao carregar planilha: {e}")
     datas = {}
-
 
 if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
@@ -330,3 +330,7 @@ for secao in secoes:
 
     st.markdown("<br>", unsafe_allow_html=True)
 st.write(d["nome"].split("  ")[-1].strip())
+
+
+datas = carregar_datas()
+st.write("DEBUG datas:", datas)
