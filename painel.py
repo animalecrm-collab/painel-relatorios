@@ -23,7 +23,7 @@ def carregar_datas():
     client = gspread.authorize(creds)
     sheet = client.open_by_key(st.secrets["SHEET_ID"]).sheet1
     rows = sheet.get_all_records()
-    return {row["nome"]: row["ultima_atualizacao"] for row in rows}
+    return {row["relatorio"]: row["ultima_atualizacao"] for row in rows}
 
 try:
     datas = carregar_datas()
