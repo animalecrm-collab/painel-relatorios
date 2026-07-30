@@ -23,7 +23,7 @@ if "autenticado" not in st.session_state:
 
 st.logo(r"LOGO_ANIMALE 1.png")
 
-st.title("Painel de Dashboards")
+st.title("Painel de Relatórios")
 
 st.divider(width="stretch")
 
