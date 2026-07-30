@@ -332,5 +332,4 @@ for secao in secoes:
 st.write(d["nome"].split("  ")[-1].strip())
 
 
-datas = carregar_datas()
-st.write("DEBUG datas:", datas)
+st.write(list(st.secrets.keys()))
