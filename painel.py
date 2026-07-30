@@ -31,7 +31,7 @@ if "autenticado" not in st.session_state:
 
     with col:
         st.markdown("<br><br><br>", unsafe_allow_html=True)
-        with st.form("login"):
+        with st.form("login", width= 400):
             st.markdown("#### Painel de Relatórios")
             st.markdown("Digite a senha para acessar.")
             senha = st.text_input("Senha", type="password")
