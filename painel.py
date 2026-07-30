@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 st.set_page_config(page_title="Digital Animale", page_icon= "🅰",layout="wide")
-em_construcao = r"dashboard-em-construcao.netlify.app"
+
 
 SENHA = "animale-ecomm-2026"
 
@@ -12,7 +12,12 @@ if "autenticado" not in st.session_state:
 
     st.markdown("""
     <style>
-    /* Centraliza verticalmente */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+
+    html, body, [class*="css"], [data-testid] {
+        font-family: 'Montserrat', sans-serif !important;
+    }
+
     .login-wrapper {
         display: flex;
         justify-content: center;
@@ -44,8 +49,6 @@ if "autenticado" not in st.session_state:
 
 st.logo(r"LOGO_ANIMALE 1.png")
 
-#st.title("Painel de Dashboards")
-
 st.space()
 
 
@@ -53,6 +56,11 @@ st.space()
 st.markdown("""
 <style>
 
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+
+html, body, [class*="css"], [data-testid] {
+    font-family: 'Montserrat', sans-serif !important;
+}
 
 /* Esconde o header nativo do Streamlit */
 header[data-testid="stHeader"] {
@@ -102,8 +110,6 @@ header[data-testid="stHeader"] {
     margin: 0 0 2rem 0;
 }
 
-
-
 /* Card base */
 a[data-testid^="stBaseLinkButton"] {
     min-height: 120px !important;
@@ -128,7 +134,7 @@ a[data-testid^="stBaseLinkButton"]:hover {
 a[data-testid^="stBaseLinkButton"] p:first-child {
     font-size: 15px !important;
     font-weight: 600 !important;
-    margin: 0 0 10px 0 !important;   /* <-- só aqui tem margem inferior */
+    margin: 0 0 10px 0 !important;
     line-height: 1.3 !important;
     color: #1a1a1a !important;
     text-align: center !important;
@@ -170,8 +176,6 @@ hr {
     <span class="top-bar-subtitle">E-commerce & CRM</span>
 </div>
 
-
-
 """, unsafe_allow_html=True)
 
 
@@ -206,12 +210,11 @@ secoes = [
                 "url": "https://performance-animale.netlify.app/",
                 "badge": "principal",
             },
-
             {
                 "nome": "🏗️  Visão de Estoque (em construção)",
                 "desc": "Cobertura e ruptura por SKU",
                 "resp": "Responsável: Aline Santos & Maria Gomes",
-                "url": "https://dashboard-em-construcao.netlify.app/",
+                "url": "https://performance-animale.netlify.app/",
                 "badge": None,
             },
         ],
@@ -239,25 +242,24 @@ secoes = [
                 "resp": "Responsável: Theo Pereira",
                 "url": "https://somagrupo.sharepoint.com/:p:/s/DigitalAnimale/IQBxN162k2fyR5lR2IjqT7JJATnDkW92vI7UilnKcSWRulE?e=oK1LK3",
                 "badge": None,
-            },   
-            { 
+            },
+            {
                 "nome": "👥  Consumidoras Seda",
                 "desc": "Análise do perfil de consumo",
                 "resp": "Responsável: Luiz Vieira",
                 "url": "https://somagrupo.sharepoint.com/:p:/s/DigitalAnimale/IQAK3Sm22jfaTrhsCpNqSDulAU4_ga2KUVsq8odXbgwTD3o?e=hvg2KX",
                 "badge": None,
-            },  
+            },
             {
                 "nome": "👥  Animale x Off Premium",
                 "desc": "Análise cross-brand",
                 "resp": "Responsável: Theo Pereira",
                 "url": "https://somagrupo.sharepoint.com/:p:/s/DigitalAnimale/IQC9O5hcJqajSrT7Wfv5-qCpAeB8MqoiKN7q_rJwoGYHC48?e=TQ2ifb",
                 "badge": None,
-            },                      
+            },
         ],
     },
 ]
-
 
 
 st.space()
@@ -267,7 +269,6 @@ cols_per_row = 3
 for secao in secoes:
     st.subheader(secao["titulo"])
     st.divider()
-
 
     dashboards = secao["dashboards"]
 
@@ -285,6 +286,4 @@ for secao in secoes:
                     use_container_width=True
                 )
 
-    st.markdown("<br>", unsafe_allow_html=True) 
-
-
+    st.markdown("<br>", unsafe_allow_html=True)
