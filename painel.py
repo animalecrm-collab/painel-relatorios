@@ -1,7 +1,6 @@
 import streamlit as st
 from pathlib import Path
-import gspread
-from google.oauth2.service_account import Credentials
+from supabase import create_client
 
 
 st.set_page_config(page_title="Digital Animale", page_icon= "🅰",layout="wide")
@@ -12,18 +11,9 @@ SENHA = "animale@2145"
 # Carrega datas da planilha
 @st.cache_data(ttl=300)
 def carregar_datas():
-    scopes = [
-        "https://www.googleapis.com/auth/spreadsheets.readonly",
-        "https://www.googleapis.com/auth/drive.readonly",
-    ]
-    creds = Credentials.from_service_account_info(
-        st.secrets["gcp_service_account"],
-        scopes=scopes
-    )
-    client = gspread.authorize(creds)
-    sheet = client.open_by_key(st.secrets["SHEET_ID"]).sheet1
-    rows = sheet.get_all_records()
-    return {row["relatorio"]: row["ultima_atualizacao"] for row in rows}
+    supabase = create_client(st.secrets["SUPABASE_URL"], st.secrets["SUPABASE_ANON_KEY"])
+    response = supabase.table("relatorios").select("nome, ultima_atualizacao").execute()
+    return {row["nome"]: row["ultima_atualizacao"] for row in response.data}
 
 try:
     datas = carregar_datas()
