@@ -249,7 +249,7 @@ secoes = [
                 "nome": "🏗️  Visão de Estoque (em construção)",
                 "desc": "Cobertura e ruptura por SKU",
                 "resp": "Responsável: Aline Santos & Maria Gomes",
-                "url": "dashboard-em-construcao.netlify.app",
+                "url": "https://dashboard-em-construcao.netlify.app",
                 "badge": None,
             },
         ],
