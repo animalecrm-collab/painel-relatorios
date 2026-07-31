@@ -8,18 +8,26 @@ st.set_page_config(page_title="Digital Animale", page_icon= "🅰",layout="wide"
 
 SENHA = "animale@2145"
 
-# Carrega datas da planilha
+# Ordem fixa das seções no painel (mesma ordem de hoje)
+ORDEM_SECOES = ["Geral", "E-commerce", "CRM & Clientes"]
+
+
 @st.cache_data(ttl=300)
-def carregar_datas():
+def carregar_relatorios():
     supabase = create_client(st.secrets["SUPABASE_URL"], st.secrets["SUPABASE_ANON_KEY"])
-    response = supabase.table("relatorios").select("nome, ultima_atualizacao").execute()
-    return {row["nome"]: row["ultima_atualizacao"] for row in response.data}
+    response = (
+        supabase.table("relatorios")
+        .select("*")
+        .order("created_at")
+        .execute()
+    )
+    return response.data
 
 try:
-    datas = carregar_datas()
+    relatorios = carregar_relatorios()
 except Exception as e:
-    st.error(f"Erro ao carregar planilha: {e}")
-    datas = {}
+    st.error(f"Erro ao carregar relatórios: {e}")
+    relatorios = []
 
 if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
@@ -215,85 +223,18 @@ hr {
 """, unsafe_allow_html=True)
 
 
+# Agrupa os relatórios vindos do Supabase nas mesmas seções de sempre.
+# A ordem dentro de cada seção segue a ordem de criação (created_at),
+# que é a mesma ordem em que os relatórios originais foram cadastrados.
+agrupado = {titulo: [] for titulo in ORDEM_SECOES}
+for r in relatorios:
+    titulo = r.get("secao") or "Geral"
+    agrupado.setdefault(titulo, []).append(r)
+
 secoes = [
-    {
-        "titulo": "Geral",
-        "dashboards": [
-            {
-                "nome": "🏪  Dossiê de Lojas",
-                "desc": "Diagnóstico por loja: base, frequência, ticket",
-                "resp": "Responsável: Theo Pereira",
-                "url": "https://supervisao-lojas.netlify.app/",
-                "badge": None,
-            },
-            {
-                "nome": "👖  Performance A.J - Coleção",
-                "desc": "Animale Jeans — performance por cidade",
-                "resp": "Responsável: Theo Pereira",
-                "url": "https://aj-colecao.netlify.app/",
-                "badge": "novo",
-            },
-        ],
-    },
-    {
-        "titulo": "E-commerce",
-        "dashboards": [
-            {
-                "nome": "📊  Analytics Dashboard",
-                "desc": "Visão geral de vendas, clientes e performance",
-                "resp": "Responsável: Aline Santos",
-                "url": "https://performance-animale.netlify.app/",
-                "badge": "principal",
-            },
-            {
-                "nome": "🏗️  Visão de Estoque (em construção)",
-                "desc": "Cobertura e ruptura por SKU",
-                "resp": "Responsável: Aline Santos & Maria Gomes",
-                "url": "https://dashboard-em-construcao.netlify.app",
-                "badge": None,
-            },
-        ],
-    },
-    {
-        "titulo": "CRM & Clientes",
-        "dashboards": [
-            {
-                "nome": "📈  Monitor de Canais — CRM",
-                "desc": "Performance e base ativa por canal",
-                "resp": "Responsável: Larissa Queiroz",
-                "url": "https://acompanhamento-canais-crm.netlify.app/",
-                "badge": None,
-            },
-            {
-                "nome": "👥  Comitê Clientes",
-                "desc": "Segmentação e saúde da base ativa",
-                "resp": "Responsável: Theo Pereira & Luiz Vieira",
-                "url": "https://somagrupo-my.sharepoint.com/:p:/g/personal/theo_pereira_animale_com_br/IQCDHZLjf7GmQpCSL8_RWrvXAb35ZTSUmOfxgV093xX9m64?wdExp=TEAMS-TREATMENT&web=1",
-                "badge": None,
-            },
-            {
-                "nome": "👥  A.J x Animale",
-                "desc": "Estudo de base ativa e comportamento",
-                "resp": "Responsável: Theo Pereira",
-                "url": "https://somagrupo.sharepoint.com/:p:/s/DigitalAnimale/IQBxN162k2fyR5lR2IjqT7JJATnDkW92vI7UilnKcSWRulE?e=oK1LK3",
-                "badge": None,
-            },
-            {
-                "nome": "👥  Consumidoras Seda",
-                "desc": "Análise do perfil de consumo",
-                "resp": "Responsável: Luiz Vieira",
-                "url": "https://somagrupo.sharepoint.com/:p:/s/DigitalAnimale/IQAK3Sm22jfaTrhsCpNqSDulAU4_ga2KUVsq8odXbgwTD3o?e=hvg2KX",
-                "badge": None,
-            },
-            {
-                "nome": "👥  Animale x Off Premium",
-                "desc": "Análise cross-brand",
-                "resp": "Responsável: Theo Pereira",
-                "url": "https://somagrupo.sharepoint.com/:p:/s/DigitalAnimale/IQC9O5hcJqajSrT7Wfv5-qCpAeB8MqoiKN7q_rJwoGYHC48?e=TQ2ifb",
-                "badge": None,
-            },
-        ],
-    },
+    {"titulo": titulo, "dashboards": dashboards}
+    for titulo, dashboards in agrupado.items()
+    if dashboards
 ]
 
 
@@ -314,11 +255,13 @@ for secao in secoes:
                 break
             d = dashboards[idx]
             with col:
-                chave = d["nome"].split("  ")[-1].strip()
-                data = datas.get(chave, "—")
+                icone = d.get("icone") or ""
+                nome_exibicao = f"{icone}  {d['nome']}" if icone else d["nome"]
+                data = d.get("ultima_atualizacao") or "—"
+                url = d.get("url") or "https://dashboard-em-construcao.netlify.app/"
                 st.link_button(
-                    f"**{d['nome']}**\n\n{d['desc']}\n\n{d['resp']}\n\nAtualizado em: {data}",
-                    d["url"],
+                    f"**{nome_exibicao}**\n\n{d['descricao']}\n\nResponsável: {d['responsavel']}\n\nAtualizado em: {data}",
+                    url,
                     use_container_width=True
                 )
 
