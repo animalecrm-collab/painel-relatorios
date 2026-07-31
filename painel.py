@@ -203,7 +203,7 @@ a[data-testid^="stBaseLinkButton"] p:last-child {
     font-weight: 400 !important;
     margin: 0 !important;
     line-height: 1.3 !important;
-    color: #bbb !important;
+    color: #999 !important;
     text-align: center !important;
 }
 
