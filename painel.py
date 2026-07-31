@@ -249,7 +249,7 @@ secoes = [
                 "nome": "🏗️  Visão de Estoque (em construção)",
                 "desc": "Cobertura e ruptura por SKU",
                 "resp": "Responsável: Aline Santos & Maria Gomes",
-                "url": "https://performance-animale.netlify.app/",
+                "url": "dashboard-em-construcao.netlify.app",
                 "badge": None,
             },
         ],
